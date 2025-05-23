@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -49,6 +50,15 @@ android {
     }
 }
 
+detekt {
+    source.setFrom("src/main/java", "src/main/kotlin")
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+    allRules = true
+    autoCorrect = true
+    parallel = true
+    buildUponDefaultConfig = true
+}
+
 dependencies {
 
     implementation(libs.kotlin.coroutines)
@@ -76,6 +86,9 @@ dependencies {
     implementation(libs.accompanist.placeholder)
 
     ksp(libs.hilt.compiler)
+    
+    detektPlugins(libs.detekt.formatting)
+    detektPlugins(libs.detekt.compose.rules)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test.junit)

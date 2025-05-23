@@ -12,3 +12,9 @@
 - Image Loading: Coil
 - Serialization: KotlinXSerialization
 - Paging: Paging3
+
+### Static Analysis Tools
+
+- Detekt
+- Detekt-Compose-Rules
+- Detekt-Formatting
