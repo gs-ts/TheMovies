@@ -38,7 +38,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
-import com.example.themovies.ui.formatCurrency
+import com.example.themovies.ui.helpers.formatCurrency
+import com.example.themovies.ui.helpers.formatRating
 import com.example.themovies.ui.mockdata.sampleMoviesPagingDataFlow
 import com.example.themovies.ui.theme.TheMoviesTheme
 
@@ -222,20 +223,18 @@ private fun MovieCard(
                     fontSize = 14.sp,
                 )
                 Text(
-                    text = "Rating: ${movieItem.rating}",
+                    text = "Rating: ${formatRating(movieItem.rating)}",
                     fontSize = 12.sp
                 )
                 movieItem.budget?.let {
-                    val formatted = formatCurrency(movieItem.budget)
                     Text(
-                        text = "Budget: $formatted",
+                        text = "Budget: ${formatCurrency(movieItem.budget)}",
                         fontSize = 10.sp
                     )
                 }
                 movieItem.revenue?.let {
-                    val formatted = formatCurrency(movieItem.revenue)
                     Text(
-                        text = "Revenue: $formatted",
+                        text = "Revenue: ${formatCurrency(movieItem.revenue)}",
                         fontSize = 10.sp
                     )
                 }

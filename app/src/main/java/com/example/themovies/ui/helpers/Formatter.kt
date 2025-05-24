@@ -1,4 +1,4 @@
-package com.example.themovies.ui
+package com.example.themovies.ui.helpers
 
 import java.util.Locale
 
@@ -8,3 +8,7 @@ fun formatCurrency(value: Long?): String {
     return String.format(Locale.getDefault(), "%.2f M", millions)
 }
 
+fun formatRating(rating: Float?): String {
+    if (rating == null) return "N/A"
+    return String.format(Locale.US, "%.1f", rating)
+}
