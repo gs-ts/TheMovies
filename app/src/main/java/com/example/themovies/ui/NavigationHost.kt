@@ -30,7 +30,7 @@ fun NavigationHost(navController: NavHostController) {
         startDestination = Movies()
     ) {
         composable<Movies>(
-            enterTransition = enterLeft,
+            enterTransition = enterRight,
             exitTransition = exitLeft,
             popEnterTransition = enterRight,
             popExitTransition = exitRight
