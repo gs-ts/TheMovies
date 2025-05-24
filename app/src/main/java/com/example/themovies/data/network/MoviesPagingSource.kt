@@ -1,9 +1,14 @@
 package com.example.themovies.data.network
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.themovies.data.dto.MovieListItemDto
+import com.example.themovies.domain.model.NetworkError.ConnectionFailed
+import com.example.themovies.domain.model.NetworkError.OtherError
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.util.network.UnresolvedAddressException
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.io.IOException
 
 class MoviesPagingSource(
@@ -25,10 +30,19 @@ class MoviesPagingSource(
                 prevKey = if (pageNumber == 1) null else pageNumber - 1,
                 nextKey = if (moviesDto.isEmpty()) null else pageNumber + 1
             )
-        } catch (e: IOException) {
-            LoadResult.Error(e)
-        } catch (e: ClientRequestException) {
-            LoadResult.Error(e)
+        } catch (exception: Exception) {
+            Log.e("MoviesPagingSource exception", exception.message.toString())
+            val error = when (exception) {
+                is IOException,
+                is TimeoutCancellationException,
+                is UnresolvedAddressException -> ConnectionFailed
+
+                else -> OtherError
+            }
+            LoadResult.Error(error)
+        } catch (clientRequestException: ClientRequestException) {
+            Log.e("MoviesPagingSource exception", clientRequestException.message.toString())
+            LoadResult.Error(OtherError)
         }
     }
 

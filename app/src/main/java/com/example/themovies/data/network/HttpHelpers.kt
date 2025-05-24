@@ -1,5 +1,6 @@
 package com.example.themovies.data.network
 
+import android.util.Log
 import com.example.themovies.domain.model.NetworkError.ConnectionFailed
 import com.example.themovies.domain.model.NetworkError.OtherError
 import io.ktor.client.HttpClient
@@ -17,6 +18,7 @@ suspend inline fun <reified T> HttpClient.safeRequest(
         val response = request { block() }
         Result.success(response.body())
     } catch (exception: Exception) {
+        Log.e("safeRequest", exception.message.toString())
         val error = when (exception) {
             is IOException,
             is TimeoutCancellationException,
