@@ -1,8 +1,8 @@
 package com.example.themovies.data.network
 
 import android.util.Log
-import com.example.themovies.domain.model.NetworkError.ConnectionFailed
-import com.example.themovies.domain.model.NetworkError.OtherError
+import com.example.themovies.domain.model.ConnectionFailed
+import com.example.themovies.domain.model.OtherError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder

@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.themovies.data.dto.MovieListItemDto
-import com.example.themovies.domain.model.NetworkError.ConnectionFailed
-import com.example.themovies.domain.model.NetworkError.OtherError
+import com.example.themovies.domain.model.ConnectionFailed
+import com.example.themovies.domain.model.OtherError
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.TimeoutCancellationException
@@ -13,7 +13,7 @@ import kotlinx.io.IOException
 
 class MoviesPagingSource(
     private val tmdbApi: TmdbApi,
-    private val genreId: Int?
+    private val genreId: Int? = null
 ) : PagingSource<Int, MovieListItemDto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieListItemDto> {
@@ -30,6 +30,9 @@ class MoviesPagingSource(
                 prevKey = if (pageNumber == 1) null else pageNumber - 1,
                 nextKey = if (moviesDto.isEmpty()) null else pageNumber + 1
             )
+        } catch (clientRequestException: ClientRequestException) {
+            Log.e("MoviesPagingSource exception", clientRequestException.message.toString())
+            LoadResult.Error(OtherError)
         } catch (exception: Exception) {
             Log.e("MoviesPagingSource exception", exception.message.toString())
             val error = when (exception) {
@@ -40,9 +43,6 @@ class MoviesPagingSource(
                 else -> OtherError
             }
             LoadResult.Error(error)
-        } catch (clientRequestException: ClientRequestException) {
-            Log.e("MoviesPagingSource exception", clientRequestException.message.toString())
-            LoadResult.Error(OtherError)
         }
     }
 

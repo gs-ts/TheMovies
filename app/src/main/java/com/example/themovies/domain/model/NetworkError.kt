@@ -1,6 +1,4 @@
 package com.example.themovies.domain.model
 
-sealed class NetworkError : Exception() {
-    data object ConnectionFailed : NetworkError()
-    data object OtherError : NetworkError()
-}
+object ConnectionFailed : Throwable("Connection Failed")
+object OtherError : Throwable("An unexpected error occurred")

@@ -1,6 +1,7 @@
 package com.example.themovies
 
 import com.example.themovies.data.network.TmdbClient
+import com.example.themovies.domain.model.ConnectionFailed
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -13,6 +14,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import org.junit.Test
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class TmdbClientTest {
@@ -84,11 +86,9 @@ class TmdbClientTest {
             val result = tmdbClient.getGenres()
 
             assertTrue(result.isFailure)
-            assertEquals(
-                "some network error",
-                result.getOrElse {
-                    it.message
-                }
-            )
+
+            assertFailsWith<ConnectionFailed> {
+                result.getOrThrow()
+            }
         }
 }
