@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,8 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,20 +38,16 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
-import com.example.themovies.domain.model.MovieDetails
-import com.example.themovies.ui.mockdata.sampleMovieDetailsMap
+import com.example.themovies.ui.formatCurrency
 import com.example.themovies.ui.mockdata.sampleMoviesPagingDataFlow
 import com.example.themovies.ui.theme.TheMoviesTheme
-import kotlinx.collections.immutable.ImmutableMap
-import kotlinx.collections.immutable.toImmutableMap
 
 @Composable
 fun MoviesScreen(
     viewModel: MoviesViewModel,
     onNavigateToFilterScreen: () -> Unit
 ) {
-    val movieItems = viewModel.movies.collectAsLazyPagingItems()
-    val movieDetailsMap by viewModel.movieDetailsMap.collectAsState()
+    val movieItems = viewModel.movieItems.collectAsLazyPagingItems()
 
     // to remember the scroll state
     val lazyGridState = rememberSaveable(saver = LazyGridState.Saver) {
@@ -62,7 +56,6 @@ fun MoviesScreen(
 
     MoviesContent(
         movieItems = movieItems,
-        movieDetailsMap = movieDetailsMap,
         lazyGridState = lazyGridState,
         onGetMovieDetails = viewModel::getMovieDetails,
         onFilterClick = onNavigateToFilterScreen
@@ -73,7 +66,6 @@ fun MoviesScreen(
 @Composable
 private fun MoviesContent(
     movieItems: LazyPagingItems<MoviesViewModel.MovieItem>,
-    movieDetailsMap: ImmutableMap<Int, MovieDetails>,
     lazyGridState: LazyGridState,
     onGetMovieDetails: (id: Int) -> Unit,
     onFilterClick: () -> Unit,
@@ -123,7 +115,6 @@ private fun MoviesContent(
                 MoviesListView(
                     modifier = Modifier.padding(innerPadding),
                     movieItems = movieItems,
-                    movieDetailsMap = movieDetailsMap,
                     lazyGridState = lazyGridState,
                     onGetMovieDetails = onGetMovieDetails
                 )
@@ -136,7 +127,6 @@ private fun MoviesContent(
 private fun MoviesListView(
     lazyGridState: LazyGridState,
     movieItems: LazyPagingItems<MoviesViewModel.MovieItem>,
-    movieDetailsMap: ImmutableMap<Int, MovieDetails>,
     onGetMovieDetails: (id: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -150,15 +140,16 @@ private fun MoviesListView(
     ) {
         items(movieItems.itemCount) { index ->
             movieItems[index]?.let { movieItem ->
-                val movieDetails = movieDetailsMap[movieItem.id]
-                if (movieDetails == null) { // fetch the details
-                    onGetMovieDetails(movieItem.id)
+                if (movieItem.budget == null || movieItem.revenue == null) {
+                    LaunchedEffect(
+                        key1 = movieItem.id,
+                        key2 = onGetMovieDetails
+                    ) {
+                        onGetMovieDetails(movieItem.id)
+                    }
                 }
 
-                MovieCard(
-                    movieItem = movieItem,
-                    movieDetails = movieDetails
-                )
+                MovieCard(movieItem = movieItem)
             }
         }
 
@@ -166,7 +157,7 @@ private fun MoviesListView(
         movieItems.apply {
             when (loadState.append) {
                 is LoadState.Loading -> {
-                    item(span = { GridItemSpan(GRID_CELL_SIZE) }) { // Span across all columns
+                    item(span = { GridItemSpan(GRID_CELL_SIZE) }) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -200,7 +191,6 @@ private fun MoviesListView(
 @Composable
 private fun MovieCard(
     movieItem: MoviesViewModel.MovieItem,
-    movieDetails: MovieDetails?,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -260,7 +250,6 @@ private fun MoviesPreview() {
         val movieLazyPagingItems = sampleMoviesPagingDataFlow.collectAsLazyPagingItems()
         MoviesContent(
             movieItems = movieLazyPagingItems,
-            movieDetailsMap = sampleMovieDetailsMap.toImmutableMap(),
             lazyGridState = LazyGridState(),
             onGetMovieDetails = {},
             onFilterClick = {}

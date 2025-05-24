@@ -15,43 +15,57 @@ private val sampleMovieItemList = listOf(
         id = 1,
         title = "Movie 1",
         rating = 4.5f,
-        posterUrl = "https://example.com/poster1.jpg"
+        posterUrl = "https://example.com/poster1.jpg",
+        budget = 100000000,
+        revenue = 200000000
     ),
     MovieItem(
         id = 2,
         title = "Movie 2",
         rating = 3.8f,
-        posterUrl = "https://example.com/poster2.jpg"
+        posterUrl = "https://example.com/poster2.jpg",
+        budget = 150000000,
+        revenue = 250000000
     ),
     MovieItem(
         id = 3,
         title = "Movie 3",
         rating = 4.2f,
-        posterUrl = "https://example.com/poster3.jpg"
+        posterUrl = "https://example.com/poster3.jpg",
+        budget = 80000000,
+        revenue = 180000000
     ),
     MovieItem(
         id = 4,
         title = "Movie 4",
         rating = 4.0f,
-        posterUrl = "https://example.com/poster4.jpg"
+        posterUrl = "https://example.com/poster4.jpg",
+        budget = 120000000,
+        revenue = 220000000
     ),
     MovieItem(
         id = 5,
         title = "Movie 5 but with very long title",
         rating = 3.5f,
-        posterUrl = "https://example.com/poster5.jpg"
+        posterUrl = "https://example.com/poster5.jpg",
+        budget = 90000000,
+        revenue = 190000000
     ),
     MovieItem(
         id = 6,
         title = "Movie 6",
         rating = 4.7f,
-        posterUrl = "https://example.com/poster6.jpg"
+        posterUrl = "https://example.com/poster6.jpg",
+        budget = 110000000,
+        revenue = 210000000
     ),
     MovieItem(
         id = 7,
         title = "Movie 7",
         rating = 3.2f,
-        posterUrl = "https://example.com/poster7.jpg"
+        posterUrl = "https://example.com/poster7.jpg",
+        budget = 70000000,
+        revenue = 170000000
     ),
     MovieItem(
         id = 8,
