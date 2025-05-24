@@ -23,7 +23,10 @@ fun NavigationHost(navController: NavHostController) {
     ) {
         composable<Movies> {
             MoviesScreen(
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
+                onNavigateToFilterScreen = {
+                    navController.navigate(Filters)
+                }
             )
         }
         composable<Filters> {
