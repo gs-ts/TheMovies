@@ -3,8 +3,6 @@ package com.example.themovies.data.network
 import com.example.themovies.data.dto.GenreListResponse
 import com.example.themovies.data.dto.MovieDetailsDto
 import com.example.themovies.data.dto.MovieListResponse
-import com.example.themovies.domain.model.Genre
-import com.example.themovies.domain.model.MovieDetails
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -27,27 +25,21 @@ class TmdbClient @Inject constructor(private val httpClient: HttpClient) : TmdbA
         }.body()
     }
 
-    override suspend fun getGenres(): Result<List<Genre>> {
+    override suspend fun getGenres(): Result<GenreListResponse> {
         return httpClient.safeRequest<GenreListResponse> {
             method = HttpMethod.Get
             url {
                 appendPathSegments(TMDB_ENDPOINT_MOVIE_GENRES)
             }
-        }.mapCatching { genreListResponse ->
-            genreListResponse.genres.map { genre ->
-                genre.toDomainModel()
-            }
         }
     }
 
-    override suspend fun getMovieDetails(movieId: Int): Result<MovieDetails> {
+    override suspend fun getMovieDetails(movieId: Int): Result<MovieDetailsDto> {
         return httpClient.safeRequest<MovieDetailsDto> {
             method = HttpMethod.Get
             url {
                 appendPathSegments(TMDB_ENDPOINT_MOVIE_DETAILS, movieId.toString())
             }
-        }.mapCatching { movieDetailsDto ->
-            movieDetailsDto.toDomainModel()
         }
     }
 

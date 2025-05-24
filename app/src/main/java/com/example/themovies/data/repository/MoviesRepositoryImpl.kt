@@ -40,9 +40,17 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override suspend fun getGenres(): Result<List<Genre>> {
         return tmdbApi.getGenres()
+            .mapCatching { genreListResponse ->
+                genreListResponse.genres.map { genre ->
+                    genre.toDomainModel()
+                }
+            }
     }
 
     override suspend fun getMovieDetails(movieId: Int): Result<MovieDetails> {
         return tmdbApi.getMovieDetails(movieId = movieId)
+            .mapCatching { movieDetailsDto ->
+                movieDetailsDto.toDomainModel()
+            }
     }
 }

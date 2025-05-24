@@ -1,8 +1,8 @@
 package com.example.themovies.data.network
 
+import com.example.themovies.data.dto.GenreListResponse
+import com.example.themovies.data.dto.MovieDetailsDto
 import com.example.themovies.data.dto.MovieListResponse
-import com.example.themovies.domain.model.Genre
-import com.example.themovies.domain.model.MovieDetails
 
 interface TmdbApi {
 
@@ -11,7 +11,7 @@ interface TmdbApi {
         genreId: Int? = null // if null then get all genres
     ): MovieListResponse
 
-    suspend fun getGenres(): Result<List<Genre>>
+    suspend fun getGenres(): Result<GenreListResponse>
 
-    suspend fun getMovieDetails(movieId: Int): Result<MovieDetails>
+    suspend fun getMovieDetails(movieId: Int): Result<MovieDetailsDto>
 }
