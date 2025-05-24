@@ -1,13 +1,16 @@
 package com.example.themovies.ui.movies
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.themovies.domain.model.MovieDetails
 import com.example.themovies.domain.usecase.GetMovieDetailsUseCase
 import com.example.themovies.domain.usecase.GetMoviesUseCase
+import com.example.themovies.ui.Movies
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentHashMapOf
@@ -17,7 +20,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,17 +27,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     getMoviesUseCase: GetMoviesUseCase,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase
 ) : ViewModel() {
+
+    private val genreId: Int? = savedStateHandle.toRoute<Movies>().genreId?.toInt()
+
+    private val movies = getMoviesUseCase(genreId = genreId).cachedIn(viewModelScope)
 
     private val _movieDetailsMap = MutableStateFlow<PersistentMap<Int, MovieDetails>>(persistentHashMapOf())
     val movieDetailsMap: StateFlow<PersistentMap<Int, MovieDetails>> = _movieDetailsMap.asStateFlow()
 
     // track already-requested IDs in order to avoid duplicate api calls
     private val requestedIds = mutableSetOf<Int>()
-
-    private val movies = getMoviesUseCase().cachedIn(viewModelScope)
 
     val movieItems: Flow<PagingData<MovieItem>> = combine(
         movies,
