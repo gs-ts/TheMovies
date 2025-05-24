@@ -33,15 +33,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.example.themovies.domain.model.MovieDetails
+import com.example.themovies.ui.mockdata.sampleMovieDetailsMap
+import com.example.themovies.ui.mockdata.sampleMoviesPagingDataFlow
+import com.example.themovies.ui.theme.TheMoviesTheme
 import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 
 @Composable
 fun MoviesScreen(
@@ -137,7 +141,7 @@ private fun MoviesListView(
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
+        columns = GridCells.Fixed(GRID_CELL_SIZE),
         contentPadding = PaddingValues(4.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -162,7 +166,7 @@ private fun MoviesListView(
         movieItems.apply {
             when (loadState.append) {
                 is LoadState.Loading -> {
-                    item(span = { GridItemSpan(3) }) { // Span across all columns
+                    item(span = { GridItemSpan(GRID_CELL_SIZE) }) { // Span across all columns
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -175,7 +179,7 @@ private fun MoviesListView(
                 }
 
                 is LoadState.Error -> {
-                    item(span = { GridItemSpan(3) }) {
+                    item(span = { GridItemSpan(GRID_CELL_SIZE) }) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -199,34 +203,67 @@ private fun MovieCard(
     movieDetails: MovieDetails?,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier.fillMaxWidth()) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(300.dp)
+    ) {
         Column {
-            AsyncImage(
-                model = null,
+            SubcomposeAsyncImage(
+                model = movieItem.posterUrl,
                 contentDescription = movieItem.title,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp) // Adjust height as needed
+                    .height(140.dp),
+                loading = {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             )
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(
                     text = movieItem.title,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    fontSize = 14.sp,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Rating: ${movieItem.rating}",
-                    fontSize = 14.sp
+                    fontSize = 12.sp
                 )
                 movieDetails?.let {
-                    Text(text = "Budget: ${movieDetails.budget}", fontSize = 12.sp)
-                    Text(text = "Revenue: ${movieDetails.revenue}", fontSize = 12.sp)
+                    Text(
+                        text = "Budget: ${movieDetails.budget}",
+                        fontSize = 10.sp
+                    )
+                    Text(
+                        text = "Revenue: ${movieDetails.revenue}",
+                        fontSize = 10.sp
+                    )
                 }
             }
         }
+    }
+}
+
+private const val GRID_CELL_SIZE = 3
+
+@Preview
+@Composable
+private fun MoviesPreview() {
+    TheMoviesTheme {
+        val movieLazyPagingItems = sampleMoviesPagingDataFlow.collectAsLazyPagingItems()
+        MoviesContent(
+            movieItems = movieLazyPagingItems,
+            movieDetailsMap = sampleMovieDetailsMap.toImmutableMap(),
+            lazyGridState = LazyGridState(),
+            onGetMovieDetails = {},
+            onFilterClick = {}
+        )
     }
 }
