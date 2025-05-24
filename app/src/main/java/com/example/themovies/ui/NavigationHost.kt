@@ -13,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.themovies.ui.filters.FiltersScreen
+import com.example.themovies.ui.filters.FiltersViewModel.Companion.ALL_GENRE_ID
 import com.example.themovies.ui.movies.MoviesScreen
 import kotlinx.serialization.Serializable
 
@@ -20,7 +21,7 @@ import kotlinx.serialization.Serializable
 data class Movies(val genreId: Int? = null)
 
 @Serializable
-object Filters
+data class Filters(val selectedGenreId: Int? = null)
 
 @Composable
 fun NavigationHost(navController: NavHostController) {
@@ -36,8 +37,8 @@ fun NavigationHost(navController: NavHostController) {
         ) { backStackEntry ->
             MoviesScreen(
                 viewModel = hiltViewModel(),
-                onNavigateToFilterScreen = {
-                    navController.navigate(Filters)
+                onNavigateToFilterScreen = { currentGenreId ->
+                    navController.navigate(Filters(selectedGenreId = currentGenreId))
                 }
             )
         }
@@ -50,7 +51,7 @@ fun NavigationHost(navController: NavHostController) {
             FiltersScreen(
                 viewModel = hiltViewModel(),
                 onFilterSelect = { genreId ->
-                    navController.navigate(Movies(genreId = genreId)) {
+                    navController.navigate(Movies(genreId = if (genreId == ALL_GENRE_ID) null else genreId)) {
                         popUpTo(navController.graph.startDestinationId) {
                             inclusive = true
                         }

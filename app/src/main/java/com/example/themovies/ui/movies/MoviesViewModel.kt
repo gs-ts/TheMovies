@@ -32,7 +32,7 @@ class MoviesViewModel @Inject constructor(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase
 ) : ViewModel() {
 
-    private val genreId: Int? = savedStateHandle.toRoute<Movies>().genreId?.toInt()
+    val genreId: Int? = savedStateHandle.toRoute<Movies>().genreId?.toInt()
 
     private val movies = getMoviesUseCase(genreId = genreId).cachedIn(viewModelScope)
 

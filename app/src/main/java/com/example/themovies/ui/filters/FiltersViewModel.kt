@@ -1,9 +1,12 @@
 package com.example.themovies.ui.filters
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.example.themovies.domain.model.Genre
 import com.example.themovies.domain.usecase.GetMovieGenresUseCase
+import com.example.themovies.ui.Filters
 import com.example.themovies.ui.filters.FiltersViewModel.State.Filter.Companion.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +17,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FiltersViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val getMovieGenresUseCase: GetMovieGenresUseCase
 ) : ViewModel() {
+
+    private val selectedGenreId: Int? = savedStateHandle.toRoute<Filters>().selectedGenreId?.toInt()
 
     private val _state = MutableStateFlow<State>(State())
     val state: StateFlow<State> = _state.asStateFlow()
@@ -26,11 +32,19 @@ class FiltersViewModel @Inject constructor(
         viewModelScope.launch {
             getMovieGenresUseCase()
                 .onSuccess { genres ->
+                    val filtersList = listOf(
+                        State.Filter(
+                            id = ALL_GENRE_ID,
+                            name = ALL_GENRE_NAME,
+                            isSelected = selectedGenreId == null
+                        )
+                    ) + genres.map { genre ->
+                        genre.toUiModel(isSelected = genre.id == selectedGenreId)
+                    }
+
                     _state.value = _state.value.copy(
                         isLoading = false,
-                        filters = genres.map { genre ->
-                            genre.toUiModel(isSelected = false)
-                        }
+                        filters = filtersList
                     )
                 }
                 .onFailure { exception ->
@@ -61,5 +75,10 @@ class FiltersViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    companion object {
+        const val ALL_GENRE_ID = -1
+        private const val ALL_GENRE_NAME = "All"
     }
 }

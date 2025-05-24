@@ -132,7 +132,7 @@ fun FilterButtonItem(
         onClick = onClick,
         shape = RoundedCornerShape(50),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Color.Black else Color.LightGray,
+            containerColor = if (isSelected) Color.Cyan else Color.LightGray,
             contentColor = if (isSelected) Color.White else Color.DarkGray
         )
     ) {

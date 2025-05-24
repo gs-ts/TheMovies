@@ -46,7 +46,7 @@ import com.example.themovies.ui.theme.TheMoviesTheme
 @Composable
 fun MoviesScreen(
     viewModel: MoviesViewModel,
-    onNavigateToFilterScreen: () -> Unit
+    onNavigateToFilterScreen: (genreId: Int?) -> Unit
 ) {
     val movieItems = viewModel.movieItems.collectAsLazyPagingItems()
 
@@ -59,7 +59,9 @@ fun MoviesScreen(
         movieItems = movieItems,
         lazyGridState = lazyGridState,
         onGetMovieDetails = viewModel::getMovieDetails,
-        onFilterClick = onNavigateToFilterScreen
+        onFilterClick = {
+            onNavigateToFilterScreen(viewModel.genreId)
+        }
     )
 }
 
