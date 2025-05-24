@@ -221,18 +221,21 @@ private fun MovieCard(
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                 )
-                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Rating: ${movieItem.rating}",
                     fontSize = 12.sp
                 )
-                movieDetails?.let {
+                movieItem.budget?.let {
+                    val formatted = formatCurrency(movieItem.budget)
                     Text(
-                        text = "Budget: ${movieDetails.budget}",
+                        text = "Budget: $formatted",
                         fontSize = 10.sp
                     )
+                }
+                movieItem.revenue?.let {
+                    val formatted = formatCurrency(movieItem.revenue)
                     Text(
-                        text = "Revenue: ${movieDetails.revenue}",
+                        text = "Revenue: $formatted",
                         fontSize = 10.sp
                     )
                 }
