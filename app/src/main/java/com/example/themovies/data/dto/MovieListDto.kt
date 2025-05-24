@@ -27,6 +27,11 @@ data class MovieListItemDto(
     fun toDomainModel() = Movie(
         id = id,
         title = title,
-        rating = rating.toFloat()
+        rating = rating.toFloat(),
+        posterUrl = posterPath?.let { "$posterBaseUrl$it" }
     )
+
+    companion object {
+        private const val posterBaseUrl = "https://image.tmdb.org/t/p/w185"
+    }
 }

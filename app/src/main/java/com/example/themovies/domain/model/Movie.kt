@@ -3,7 +3,8 @@ package com.example.themovies.domain.model
 data class Movie(
     val id: Int,
     val title: String,
-    val rating: Float
+    val rating: Float,
+    val posterUrl: String?
 )
 
 data class MovieDetails(
