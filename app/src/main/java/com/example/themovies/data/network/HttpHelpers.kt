@@ -1,15 +1,14 @@
 package com.example.themovies.data.network
 
-import android.util.Log
+import com.example.themovies.domain.model.NetworkError.ConnectionFailed
+import com.example.themovies.domain.model.NetworkError.OtherError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
-import io.ktor.serialization.JsonConvertException
+import io.ktor.util.network.UnresolvedAddressException
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.io.IOException
-import kotlinx.serialization.SerializationException
 
 suspend inline fun <reified T> HttpClient.safeRequest(
     block: HttpRequestBuilder.() -> Unit,
@@ -17,23 +16,17 @@ suspend inline fun <reified T> HttpClient.safeRequest(
     try {
         val response = request { block() }
         Result.success(response.body())
+    } catch (exception: Exception) {
+        val error = when (exception) {
+            is IOException,
+            is TimeoutCancellationException,
+            is UnresolvedAddressException -> ConnectionFailed
+
+            else -> OtherError
+        }
+        Result.failure(error)
     }
+
 //    catch (e: CancellationException) { // TODO
 //        throw e // rethrow to not interfere with coroutine cancellation
 //    }
-    catch (e: JsonConvertException) {
-        Log.e("SafeRequest", "JsonConvert Error: ${e.message}", e)
-        Result.failure(e)
-    } catch (e: ClientRequestException) {
-        Log.e("SafeRequest", "Client Error: ${e.response.status.value}", e)
-        Result.failure(e)
-    } catch (e: ServerResponseException) {
-        Log.e("SafeRequest", "Server Error: ${e.response.status.value}", e)
-        Result.failure(e)
-    } catch (e: IOException) {
-        Log.e("SafeRequest", "Network Error", e)
-        Result.failure(e)
-    } catch (e: SerializationException) {
-        Log.e("SafeRequest", "Serialization Error", e)
-        Result.failure(e)
-    }
