@@ -8,10 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
 
-    fun getMovies(
-        page: Int,
-        genreId: Int? = null // if null then get all genres
-    ): Flow<PagingData<Movie>>
+    fun getMovies(genreId: Int? = null): Flow<PagingData<Movie>>
 
     suspend fun getGenres(): Result<List<Genre>>
 

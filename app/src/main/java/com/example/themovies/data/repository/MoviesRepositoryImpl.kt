@@ -19,13 +19,12 @@ class MoviesRepositoryImpl @Inject constructor(
 ) : MoviesRepository {
 
     override fun getMovies(
-        page: Int,
         genreId: Int?
     ): Flow<PagingData<Movie>> {
         return Pager(
             PagingConfig(
-                pageSize = 10,
-                initialLoadSize = 10,
+                pageSize = 20,
+                initialLoadSize = 40,
                 prefetchDistance = 5
             )
         ) {
