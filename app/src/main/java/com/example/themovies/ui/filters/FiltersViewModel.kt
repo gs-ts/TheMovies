@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.themovies.domain.model.Genre
 import com.example.themovies.domain.usecase.GetMovieGenresUseCase
+import com.example.themovies.ui.filters.FiltersViewModel.State.Filter.Companion.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +28,9 @@ class FiltersViewModel @Inject constructor(
                 .onSuccess { genres ->
                     _state.value = _state.value.copy(
                         isLoading = false,
-                        genres = genres
+                        filters = genres.map { genre ->
+                            genre.toUiModel(isSelected = false)
+                        }
                     )
                 }
                 .onFailure { exception ->
@@ -39,13 +42,24 @@ class FiltersViewModel @Inject constructor(
         }
     }
 
-    fun onFilterSelect(genreId: Int) {
-        // TODO or navigate back with id
-    }
-
     data class State(
         val isLoading: Boolean = true,
-        val genres: List<Genre> = emptyList(),
+        val filters: List<Filter> = emptyList(),
         val hasError: Boolean = false
-    )
+    ) {
+
+        data class Filter(
+            val id: Int,
+            val name: String,
+            val isSelected: Boolean
+        ) {
+            companion object {
+                fun Genre.toUiModel(isSelected: Boolean): Filter = Filter(
+                    id = id,
+                    name = name,
+                    isSelected = isSelected
+                )
+            }
+        }
+    }
 }

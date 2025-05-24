@@ -5,6 +5,7 @@ package com.example.themovies.ui.helpers
 import androidx.paging.LoadState
 import androidx.paging.LoadStates
 import androidx.paging.PagingData
+import com.example.themovies.ui.filters.FiltersViewModel.State.Filter
 import com.example.themovies.ui.movies.MoviesViewModel.MovieItem
 import kotlinx.coroutines.flow.flowOf
 
@@ -106,4 +107,22 @@ val sampleMoviesPagingDataFlow = flowOf(
             append = LoadState.NotLoading(endOfPaginationReached = true)
         )
     )
+)
+
+val filterItems = listOf(
+    Filter(1, "Action", isSelected = false),
+    Filter(2, "Comedy", isSelected = false),
+    Filter(3, "Drama", isSelected = false),
+    Filter(4, "Thriller", isSelected = false),
+    Filter(5, "Horror", isSelected = false),
+    Filter(6, "Romance", isSelected = false),
+    Filter(7, "Sci-Fi", isSelected = false),
+    Filter(8, "Mystery", isSelected = true),
+    Filter(9, "Animation", isSelected = false),
+    Filter(10, "Adventure", isSelected = false),
+    Filter(11, "Fantasy", isSelected = false),
+    Filter(12, "Crime", isSelected = false),
+    Filter(13, "Family", isSelected = false),
+    Filter(14, "History", isSelected = false),
+    Filter(15, "Music", isSelected = false)
 )
