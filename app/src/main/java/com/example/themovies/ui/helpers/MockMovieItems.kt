@@ -1,13 +1,11 @@
 @file:Suppress("MagicNumber")
 
-package com.example.themovies.ui.mockdata
+package com.example.themovies.ui.helpers
 
 import androidx.paging.LoadState
 import androidx.paging.LoadStates
 import androidx.paging.PagingData
-import com.example.themovies.domain.model.MovieDetails
 import com.example.themovies.ui.movies.MoviesViewModel.MovieItem
-import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.flow.flowOf
 
 private val sampleMovieItemList = listOf(
@@ -97,49 +95,6 @@ private val sampleMovieItemList = listOf(
         rating = 3.9f,
         posterUrl = "https://example.com/poster12.jpg"
     )
-)
-
-val sampleMovieDetailsMap = persistentMapOf(
-    1 to MovieDetails(
-        id = 1,
-        budget = 100000000,
-        revenue = 200000000
-    ),
-    2 to MovieDetails(
-        id = 2,
-        budget = 150000000,
-        revenue = 250000000
-    ),
-    3 to MovieDetails(
-        id = 3,
-        budget = 80000000,
-        revenue = 180000000
-    ),
-    4 to MovieDetails(
-        id = 4,
-        budget = 120000000,
-        revenue = 220000000
-    ),
-    5 to MovieDetails(
-        id = 5,
-        budget = 90000000,
-        revenue = 190000000
-    ),
-    6 to MovieDetails(
-        id = 6,
-        budget = 110000000,
-        revenue = 210000000
-    ),
-    7 to MovieDetails(
-        id = 7,
-        budget = 70000000,
-        revenue = 170000000
-    ),
-    8 to MovieDetails(
-        id = 8,
-        budget = 130000000,
-        revenue = 230000000
-    ),
 )
 
 val sampleMoviesPagingDataFlow = flowOf(

@@ -40,7 +40,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import com.example.themovies.ui.helpers.formatCurrency
 import com.example.themovies.ui.helpers.formatRating
-import com.example.themovies.ui.mockdata.sampleMoviesPagingDataFlow
+import com.example.themovies.ui.helpers.sampleMoviesPagingDataFlow
 import com.example.themovies.ui.theme.TheMoviesTheme
 
 @Composable
