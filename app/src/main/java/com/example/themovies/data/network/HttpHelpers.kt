@@ -8,8 +8,8 @@ import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
 import io.ktor.util.network.UnresolvedAddressException
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.io.IOException
+import kotlin.coroutines.cancellation.CancellationException
 
 suspend inline fun <reified T> HttpClient.safeRequest(
     block: HttpRequestBuilder.() -> Unit,
@@ -17,18 +17,15 @@ suspend inline fun <reified T> HttpClient.safeRequest(
     try {
         val response = request { block() }
         Result.success(response.body())
+    } catch (exception: CancellationException) {
+        throw exception // rethrow to propagate cancellation
     } catch (exception: Exception) {
-        Log.e("safeRequest", exception.message.toString())
+        Log.e("safeRequest", "Network request failed: ${exception.message}", exception)
         val error = when (exception) {
             is IOException,
-            is TimeoutCancellationException,
             is UnresolvedAddressException -> ConnectionFailed
 
             else -> OtherError
         }
         Result.failure(error)
     }
-
-//    catch (e: CancellationException) { // TODO
-//        throw e // rethrow to not interfere with coroutine cancellation
-//    }
