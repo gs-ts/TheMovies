@@ -7,13 +7,13 @@
 - Image Loading: Coil
 - Serialization: KotlinXSerialization
 - Paging: Paging3
-- kotlinx-collections: https://github.com/Kotlin/kotlinx.collections.immutable
+- [kotlinx-collections](https://github.com/Kotlin/kotlinx.collections.immutable)
 - mindSdk = 25 (Android 7) & targetSdk = 36 (Android 16)
 
 ### Static Analysis Tools
 
 - Detekt
-- Detekt-Compose-Rules
+- [Detekt-Compose-Rules](https://mrmans0n.github.io/compose-rules/)
 - Detekt-Formatting
 
 ### Architecture and other Technical details
