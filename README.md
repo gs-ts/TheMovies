@@ -32,7 +32,7 @@ The Ktor `HttpClient` is configured in the di module and includes a retry mechan
 For Composables, `kotlinx.collections.immutable` is used to leverage immutable collections and improve Compose state handling.
 
 ### Build and run the project
-The only thing you need is to add your tmdb api key to the `di` module. (or search for `TMDB_API_KEY` in the code)
+The only thing you need is to add your tmdb api key to the `di/TmdbApiConstants`. (or search for `TMDB_API_KEY` in the code)
 
 ### Potential Improvements if more time was available :)
 - modularization (e.g. by feature or by layer)
